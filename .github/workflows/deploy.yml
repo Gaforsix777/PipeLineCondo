@@ -1,40 +1,38 @@
-name: Deploy pagin estatica en pages
+name: Deploy página estática en GitHub Pages
 
 on:
-#cuando se haga push a la rama main, se ejecutara el workflow
   push:
-#se ejecutara cuando se haga push a la rama main
-    branches: ["main"]
-    #se ejecutara cuando se haga push a la rama main
+    branches:
+      - main
   workflow_dispatch:
+
 permissions:
-#permisos necesarios para que github actions estriva en el despliegue en la consola
   contents: read
   pages: write
   id-token: write
-  #solo permite un depliegue a la vez
-concurrency: 
-group: "pages"
-cancel-in-progress: true
-jobs:
-deploy:
-environment:
-name: github-pages
-url: ${{ steps.deployment.outputs.page_url }}
-runs-on: ubuntu-latest
-steps:
 
-  - name: Checkout
-    uses: actions/checkout@v6
-  - name: Setup Pages
-    uses: actions/configure-pages@v5
-    #carga de archivos a github pages
-  - name: Carga artifactos
-    uses: actions/upload-pages-artifact@v4
-    with:
-    #carpeta deon esta web *(index.html) 
-      path: "."
-    #desplegar los archivos con github pages
-  - name: Desplegar en GitHub Pages
-    id: deployment
-    uses: actions/deploy-pages@v1
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Cargar artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
